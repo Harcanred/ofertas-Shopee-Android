@@ -1,0 +1,7 @@
+{
+  "name": "Central de Ofertas",
+  "description": "Aplicativo para afiliados encontrarem, prepararem e compartilharem ofertas da Shopee e baixarem vídeos da Shopee e Mercado Livre. Criado por Ronaldo Costa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
