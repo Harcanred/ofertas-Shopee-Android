@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Plus, 
@@ -16,11 +16,13 @@ import {
   Lock,
   Unlock,
   Eye,
-  EyeOff
+  EyeOff,
+  Cloud
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { 
   getStoredLicenses, 
+  subscribeToLicenses,
   createNewLicense, 
   toggleBlockLicense, 
   releaseLicenseDevice, 
@@ -37,12 +39,24 @@ import { License } from '../../types';
 import { copyToClipboard } from '../../services/shareService';
 
 export const AdminPanelModal: React.FC = () => {
-  const { adminPanelOpen, setAdminPanelOpen, showToast, setActiveLicenseState } = useApp();
+  const { adminPanelOpen, setAdminPanelOpen, showToast } = useApp();
   const [licenses, setLicenses] = useState<License[]>(() => getStoredLicenses());
   const [searchFilter, setSearchFilter] = useState('');
   const [showNewKeyModal, setShowNewKeyModal] = useState(false);
   const [showSecurityModal, setShowSecurityModal] = useState(false);
   const [unmaskedKeyId, setUnmaskedKeyId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Subscribe to real-time Firestore updates
+  useEffect(() => {
+    if (!adminPanelOpen) return;
+    setIsSyncing(true);
+    const unsubscribe = subscribeToLicenses((updated) => {
+      setLicenses(updated);
+      setIsSyncing(false);
+    });
+    return () => unsubscribe();
+  }, [adminPanelOpen]);
 
   // Security state
   const [currentPassInput, setCurrentPassInput] = useState('');
@@ -76,14 +90,14 @@ export const AdminPanelModal: React.FC = () => {
     (l.notes && l.notes.toLowerCase().includes(searchFilter.toLowerCase()))
   );
 
-  const handleCreateKey = (e: React.FormEvent) => {
+  const handleCreateKey = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newClientName.trim()) {
       alert('Informe o nome do afiliado / cliente.');
       return;
     }
 
-    const created = createNewLicense({
+    const created = await createNewLicense({
       clientName: newClientName,
       notes: newNotes,
       durationMonths,
@@ -94,7 +108,7 @@ export const AdminPanelModal: React.FC = () => {
     setNewNotes('');
     setShowNewKeyModal(false);
     refreshList();
-    showToast(`Chave ${created.key} gerada com sucesso!`);
+    showToast(`Chave ${created.key} gerada e sincronizada na nuvem!`);
   };
 
   const handleCopyKey = async (key: string) => {
@@ -102,29 +116,29 @@ export const AdminPanelModal: React.FC = () => {
     showToast('Chave copiada para a área de transferência!');
   };
 
-  const handleToggleBlock = (id: string) => {
-    toggleBlockLicense(id);
+  const handleToggleBlock = async (id: string) => {
+    await toggleBlockLicense(id);
     refreshList();
-    showToast('Status da licença atualizado!');
+    showToast('Status da licença atualizado no banco em nuvem!');
   };
 
-  const handleReleaseDevice = (id: string) => {
-    releaseLicenseDevice(id);
+  const handleReleaseDevice = async (id: string) => {
+    await releaseLicenseDevice(id);
     refreshList();
-    showToast('Dispositivo liberado! A chave pode ser ativada em outro celular.');
+    showToast('Dispositivo liberado no banco em nuvem! Pronto para novo aparelho.');
   };
 
-  const handleRenew = (id: string) => {
-    renewLicense(id, 12);
+  const handleRenew = async (id: string) => {
+    await renewLicense(id, 12);
     refreshList();
-    showToast('Licença renovada por mais 12 meses!');
+    showToast('Licença renovada por mais 12 meses na nuvem!');
   };
 
-  const handleRevoke = (id: string) => {
-    if (window.confirm('Tem certeza que deseja revogar e excluir permanentemente esta licença?')) {
-      revokeLicense(id);
+  const handleRevoke = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja revogar e excluir permanentemente esta licença do banco em nuvem?')) {
+      await revokeLicense(id);
       refreshList();
-      showToast('Licença revogada e excluída.');
+      showToast('Licença revogada e excluída da nuvem.');
     }
   };
 
@@ -139,6 +153,10 @@ export const AdminPanelModal: React.FC = () => {
               <h2 className="text-lg font-bold tracking-tight">
                 Painel Administrativo de Licenças
               </h2>
+              <span className="text-[10px] font-semibold bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <Cloud className="w-3 h-3 text-emerald-400" />
+                <span>Nuvem Firestore Conectada</span>
+              </span>
             </div>
             <p className="text-xs text-neutral-400 mt-0.5">
               Central de Ofertas · Painel Privado de Ronaldo Costa

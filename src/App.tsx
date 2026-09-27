@@ -4,8 +4,9 @@
  * @license Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { testFirestoreConnection } from './services/firebase';
 import { AndroidDeviceFrame } from './components/android/AndroidDeviceFrame';
 import { SplashScreen } from './components/screens/SplashScreen';
 import { ActivationScreen } from './components/screens/ActivationScreen';
@@ -61,6 +62,12 @@ const ScreenRouter: React.FC = () => {
 };
 
 export default function App() {
+  useEffect(() => {
+    testFirestoreConnection().catch(err => {
+      console.warn('Firestore initial boot check:', err);
+    });
+  }, []);
+
   return (
     <AppProvider>
       <AndroidDeviceFrame>

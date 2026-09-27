@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidLicense(data) {
+      return data.key is string && data.key.size() <= 64 &&
+             data.clientName is string && data.clientName.size() <= 120 &&
+             data.status in ['active', 'available', 'blocked', 'expired'] &&
+             data.createdAt is string &&
+             data.expiresAt is string &&
+             data.deviceLimit is number && data.deviceLimit >= 1 && data.deviceLimit <= 10;
+    }
+
+    // Global default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Licenses collection for Central de Ofertas
+    match /licenses/{licenseId} {
+      allow get: if isValidId(licenseId);
+      allow list: if true;
+      allow create: if isValidId(licenseId) && isValidLicense(incoming());
+      allow update: if isValidId(licenseId) && isValidLicense(incoming());
+      allow delete: if isValidId(licenseId);
+    }
+  }
+}

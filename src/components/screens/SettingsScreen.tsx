@@ -17,6 +17,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { AndroidStatusBar } from '../android/AndroidStatusBar';
 import { AndroidNavBar } from '../android/AndroidNavBar';
+import { PWAInstallButton } from '../common/PWAInstallButton';
 import { testShopeeConnection } from '../../services/shopeeService';
 import { isHideAdminButtonEnabled } from '../../services/adminAuthService';
 import { AppTheme } from '../../types';
@@ -213,6 +214,9 @@ export const SettingsScreen: React.FC = () => {
             <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200" />
           </button>
         </div>
+
+        {/* Install on device banner */}
+        <PWAInstallButton variant="banner" />
 
         {/* Sair do aplicativo (Matching Screen 12) */}
         <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 shadow-xs overflow-hidden">

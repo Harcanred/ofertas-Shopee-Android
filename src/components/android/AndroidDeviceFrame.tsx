@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Smartphone, Monitor, Shield, Sparkles, Sun, Moon } from 'lucide-react';
 import { ScreenType } from '../../types';
+import { PWAInstallButton } from '../common/PWAInstallButton';
 
 export const AndroidDeviceFrame: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { 
@@ -61,6 +62,9 @@ export const AndroidDeviceFrame: React.FC<{ children: React.ReactNode }> = ({ ch
 
         {/* Right Tools */}
         <div className="flex items-center gap-2">
+          {/* PWA Install Button */}
+          <PWAInstallButton variant="compact" />
+
           {/* Admin Panel button */}
           <button
             onClick={openAdminPanelSecurely}

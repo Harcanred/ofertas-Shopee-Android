@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "license": {
+      "title": "License",
+      "description": "Represents an activation license key for Central de Ofertas affiliate app",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the license"
+        },
+        "key": {
+          "type": "string",
+          "description": "Formatted license key OFERTA-XXXX-XXXX-XXXX"
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Name of the affiliate or customer"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes, WhatsApp contact, etc."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "available", "blocked", "expired"],
+          "description": "Current status of the license"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "activatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of first activation"
+        },
+        "expiresAt": {
+          "type": "string",
+          "description": "ISO timestamp of license expiration"
+        },
+        "deviceLimit": {
+          "type": "number",
+          "description": "Number of allowed devices (default 1)"
+        },
+        "activeDeviceId": {
+          "type": "string",
+          "description": "Identifier of the currently activated device"
+        },
+        "activeDeviceModel": {
+          "type": "string",
+          "description": "Human-readable device model"
+        }
+      },
+      "required": ["key", "clientName", "status", "createdAt", "expiresAt", "deviceLimit"]
+    }
+  },
+  "firestore": {
+    "/licenses/{licenseId}": {
+      "schema": {
+        "$ref": "#/entities/license"
+      },
+      "description": "Affiliate activation licenses managed by administrator Ronaldo Costa"
+    }
+  }
+}

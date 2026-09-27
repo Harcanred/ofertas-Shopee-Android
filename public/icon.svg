@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b3d" />
+      <stop offset="100%" stop-color="#ee4d2d" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe600" />
+      <stop offset="100%" stop-color="#ffb703" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Background with rounded squircles -->
+  <rect width="512" height="512" rx="112" fill="url(#brandGrad)" />
+
+  <!-- Inner Subtle Ring -->
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="4" />
+
+  <!-- Shopping Bag Body -->
+  <g filter="url(#shadow)">
+    <!-- Bag Handle -->
+    <path d="M192 180 V140 C192 104.6 220.6 76 256 76 C291.4 76 320 104.6 320 140 V180" 
+          fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round" />
+
+    <!-- Bag Main -->
+    <path d="M128 184 L148 412 C150 432 166 448 186 448 H326 C346 448 362 432 364 412 L384 184 Z" 
+          fill="#ffffff" />
+          
+    <!-- Flash Lightning Bolt -->
+    <path d="M268 214 L204 316 H260 L244 416 L312 300 H258 Z" 
+          fill="url(#accentGrad)" stroke="#ee4d2d" stroke-width="3" stroke-linejoin="round" />
+  </g>
+</svg>
